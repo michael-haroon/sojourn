@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,12 +19,13 @@ const Login = () => {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupName, setSignupName] = useState("");
+  const [signupAddress, setSignupAddress] = useState("");
+  const [signupBirthdate, setSignupBirthdate] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if already authenticated
   if (user) {
     navigate("/trips", { replace: true });
     return null;
@@ -53,7 +53,9 @@ const Login = () => {
     const { error } = await supabase.auth.signUp({
       email: signupEmail,
       password: signupPassword,
-      options: { data: { name: signupName } },
+      options: { 
+        data: { name: signupName, address: signupAddress, birthdate: signupBirthdate }
+      },
     });
     setIsSubmitting(false);
     if (error) {
@@ -145,6 +147,26 @@ const Login = () => {
                       />
                     </div>
                     <div className="space-y-2">
+                      <Label htmlFor="address">Address</Label>
+                      <Textarea
+                        id="address"
+                        placeholder="123 Main St, City, State ZIP"
+                        value={signupAddress}
+                        onChange={(e) => setSignupAddress(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="birthdate">Birthdate</Label>
+                      <Input
+                        id="birthdate"
+                        type="date"
+                        value={signupBirthdate}
+                        onChange={(e) => setSignupBirthdate(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
                       <Label htmlFor="signup-email">Email</Label>
                       <Input
                         id="signup-email"
@@ -195,4 +217,3 @@ const Login = () => {
 };
 
 export default Login;
-
