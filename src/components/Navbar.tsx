@@ -1,21 +1,22 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
-  Home,
-  Calendar,
-  User,
-  Menu,
-  X,
-  LogIn
+  Home, Calendar, User, Menu, X, LogIn, LogOut
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-  // This would be replaced with actual authentication logic
-  const isLoggedIn = false;
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-background/80 blur-backdrop border-b">
@@ -44,14 +45,21 @@ const Navbar = () => {
             <span>Account</span>
           </Link>
           
-          {isLoggedIn ? (
-            <Button variant="outline" className="ml-2">
-              <User size={16} className="mr-2" /> Profile
-            </Button>
+          {!loading && user ? (
+            <>
+              <span className="ml-2 font-medium">
+                {profile?.name ? profile.name : profile?.email}
+              </span>
+              <Button variant="outline" className="ml-2" onClick={handleLogout}>
+                <LogOut size={16} className="mr-2" /> Logout
+              </Button>
+            </>
           ) : (
-            <Button className="ml-2 bg-gradient-to-r from-ocean-500 to-forest-500 hover:opacity-90">
-              <LogIn size={16} className="mr-2" /> Login
-            </Button>
+            <Link to="/login">
+              <Button className="ml-2 bg-gradient-to-r from-ocean-500 to-forest-500 hover:opacity-90">
+                <LogIn size={16} className="mr-2" /> Login
+              </Button>
+            </Link>
           )}
         </div>
 
@@ -94,21 +102,26 @@ const Navbar = () => {
             </Link>
             
             <div className="pt-4 border-t">
-              {isLoggedIn ? (
+              {!loading && user ? (
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleLogout();
+                  }}
                 >
-                  <User size={18} className="mr-2" /> Profile
+                  <LogOut size={18} className="mr-2" /> Logout
                 </Button>
               ) : (
-                <Button 
-                  className="w-full justify-start bg-gradient-to-r from-ocean-500 to-forest-500 hover:opacity-90"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <LogIn size={18} className="mr-2" /> Login
-                </Button>
+                <Link to="/login">
+                  <Button 
+                    className="w-full justify-start bg-gradient-to-r from-ocean-500 to-forest-500 hover:opacity-90"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <LogIn size={18} className="mr-2" /> Login
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
