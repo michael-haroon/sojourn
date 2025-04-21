@@ -11,6 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
 type Itinerary = Database["public"]["Tables"]["itineraries"]["Row"];
+type ItineraryData = {
+  image?: string;
+  summary?: string;
+  [key: string]: any;
+};
 
 const TripsPage = () => {
   const { user, loading } = useAuth();
@@ -138,9 +143,12 @@ type TripProps = {
 };
 
 const TripCard = ({ trip }: TripProps) => {
+  // Safely cast the JSON data field to our ItineraryData type with expected properties
+  const tripData = trip.data as ItineraryData | null;
+  
   // Provide placeholder image if not present
   const img =
-    trip.data?.image ||
+    tripData?.image ||
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80";
   return (
     <Card className="overflow-hidden card-hover">
@@ -171,8 +179,8 @@ const TripCard = ({ trip }: TripProps) => {
           </span>
         </div>
 
-        {trip.data?.summary && (
-          <div className="mt-1 text-xs text-muted-foreground">{trip.data.summary}</div>
+        {tripData?.summary && (
+          <div className="mt-1 text-xs text-muted-foreground">{tripData.summary}</div>
         )}
 
         <div className="flex items-center mt-1">
