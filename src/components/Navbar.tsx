@@ -19,13 +19,13 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-background/80 blur-backdrop border-b">
-      <div className="container mx-auto flex items-center justify-between h-16 px-4">
+      <div className="container mx-auto flex items-center justify-between h-16 px-2 md:px-4">
         <Link to="/" className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-ocean-500 to-forest-500 flex items-center justify-center">
-            <span className="text-white font-bold">VW</span>
+            <span className="text-white font-bold">SJ</span>
           </div>
           <span className="font-bold text-xl hidden sm:inline-block">
-            Voyage Whisperer
+            Sojourn
           </span>
         </Link>
 

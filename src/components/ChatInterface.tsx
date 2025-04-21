@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,7 +25,7 @@ const ChatInterface = () => {
     {
       id: '1',
       sender: 'assistant',
-      text: "Hello! I'm your Voyage Whisperer assistant. Tell me about your travel plans, and I'll help you schedule everything - from flights and transportation to hotels and activities. What are you planning?",
+      text: "👋 Hi! I'm your Sojourn agent. Just tell me your travel goals, plans, or dates (like 'June 23-27'), and I’ll check the internet for the best trip options, then handle every step for you—flights, transport, hotels, and more! How can I help you today?",
       timestamp: new Date(),
     },
   ]);
@@ -49,7 +48,6 @@ const ChatInterface = () => {
   const handleSendMessage = async () => {
     if (!input.trim()) return;
     
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       sender: 'user',
@@ -61,25 +59,24 @@ const ChatInterface = () => {
     setInput('');
     setIsProcessing(true);
     
-    // Simulate AI processing
     setTimeout(() => {
-      // In a real app, this would be an API call to your AI service
       processUserInput(userMessage.text);
     }, 1500);
   };
 
   const processUserInput = (userText: string) => {
     let responseText = '';
-    
-    // Simple demonstration of how the AI might respond based on keywords
     const lowerCaseText = userText.toLowerCase();
-    
-    if (lowerCaseText.includes('cruise') || lowerCaseText.includes('seattle')) {
-      responseText = "I see you're planning a cruise from Seattle! Let me help you with that. I'll need some details to create your perfect itinerary:";
-      
-      // Simulate creating an itinerary after receiving cruise information
+
+    if (
+      lowerCaseText.match(/(\bjune\b|\bmay\b|\bjuly\b|\baugust\b|\bseptember\b|\boctober\b|\bnovember\b|\bdecember\b|\bjanuary\b|\bfebruary\b|\bmarch\b|\bapril\b)/) &&
+      lowerCaseText.match(/\d/)
+    ) {
+      responseText = "Great! I'll check current vacation options and popular destinations online for those dates, then build an itinerary for you.\n\nAre you looking for a relaxing trip, an adventure, or something else? Any destination preferences or places to avoid?";
+    } else if (lowerCaseText.includes('cruise') || lowerCaseText.includes('seattle')) {
+      responseText = "I see you're planning a cruise from Seattle! I'll check online for the best travel options and help you with all arrangements. Please share requested details (dates, departure city, etc) if you haven't yet.";
+
       if (lowerCaseText.includes('june 14') && lowerCaseText.includes('princess cruise')) {
-        // Generate a demo itinerary
         const newItinerary: ItineraryStep[] = [
           {
             type: 'flight',
@@ -150,17 +147,24 @@ const ChatInterface = () => {
         setCurrentItinerary(newItinerary);
         setShowItinerary(true);
         
-        responseText = "Based on your Princess Cruise departing Seattle on June 14th at 3PM and returning June 21st at 7AM, I've created a complete itinerary for you. I've scheduled flights from LA, pre-cruise accommodation, and all necessary transfers. Would you like to review and confirm this itinerary?";
+        responseText = "Based on what I found online for your Princess Cruise departing Seattle June 14 and returning June 21, here's a full itinerary—flights from LA, hotels, and all necessary transfers. Would you like to review and confirm?";
       } else {
-        responseText = "I see you're planning a cruise! To create your personalized itinerary, I need a few more details: \n\n1. What are the exact dates and times of your cruise? \n2. Which city are you departing from? \n3. Do you prefer morning or evening flights? \n4. Would you like to stay at a hotel before your cruise?";
+        responseText += "\n\n(Just let me know your exact cruise dates and home city to get started with detailed plans!)";
       }
-    } else if (lowerCaseText.includes('flight') || lowerCaseText.includes('hotel')) {
-      responseText = "I'd be happy to help you book flights and hotels. Could you please provide more details about your destination, travel dates, and any preferences you have?";
+    } else if (
+      lowerCaseText.includes('flight') ||
+      lowerCaseText.includes('hotel')
+    ) {
+      responseText = "Absolutely! I'll check booked and available flights/hotels online. Can you provide more details about where and when you want to travel, and any preferences?";
+    } else if (
+      lowerCaseText.match(/\d{1,2}\s*-\s*\d{1,2}/) ||
+      lowerCaseText.match(/\b\d{1,2}\/\d{1,2}\b/)
+    ) {
+      responseText = "Thanks! I’ll look up fresh recommendations and deals for those dates on the internet. Do you have a destination in mind, or should I suggest some trending vacation spots?";
     } else {
-      responseText = "Thanks for sharing your travel plans. I'd be happy to help organize your itinerary. Could you provide more details about your destination, travel dates, and any specific requirements you have?";
+      responseText = "Thanks for sharing your travel plans. I'll check for current travel trends online and start building your itinerary. Could you provide more details about your ideal trip, dates, or any wishes or needs you have?";
     }
     
-    // Add AI response
     const aiMessage: Message = {
       id: Date.now().toString(),
       sender: 'assistant',
@@ -216,7 +220,7 @@ const ChatInterface = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Describe your travel plans... (e.g., 'I have a Princess cruise in Seattle on June 14th...')"
+              placeholder="Describe your travel ideas or just give your dates (e.g., 'June 23-27, 2025')"
               className="resize-none min-h-[60px] input-focus"
               disabled={isProcessing}
             />
@@ -236,8 +240,8 @@ const ChatInterface = () => {
         {showItinerary && (
           <Card className="p-4 h-full overflow-y-auto">
             <div className="mb-4">
-              <h2 className="text-2xl font-bold text-center gradient-text">Your Itinerary</h2>
-              <p className="text-center text-muted-foreground">Princess Cruise - June 2025</p>
+              <h2 className="text-2xl font-bold text-center gradient-text">Your Sojourn Itinerary</h2>
+              <p className="text-center text-muted-foreground">Generated just for you</p>
             </div>
             
             <div className="space-y-4">
