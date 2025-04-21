@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -214,7 +215,7 @@ const ChatInterface = () => {
       return;
     }
     const allowedFields = ["name", "address", "birthdate"];
-    let updatePayload: Record<string, any> = { id: user.id };
+    let updatePayload: { id: string; [key: string]: any } = { id: user.id };
     for (const key of allowedFields) {
       if (updates[key]) {
         updatePayload[key] = updates[key];

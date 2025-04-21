@@ -1,6 +1,8 @@
 
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const AccountPage = () => {
   const { profile, user, loading } = useAuth();
@@ -12,18 +14,28 @@ const AccountPage = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8 max-w-md">
-        <h1 className="text-2xl font-bold mb-4">Account</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">Account</h1>
+          <Button variant="outline" asChild>
+            <Link to="/edit-profile">Edit Profile</Link>
+          </Button>
+        </div>
         <div className="bg-muted/40 rounded-lg border p-5 space-y-2">
           <div>
             <span className="font-semibold">Name: </span>
-            {profile?.name || "No name (edit coming soon)"}
+            {profile?.name || "Not provided"}
           </div>
           <div>
             <span className="font-semibold">Email: </span>
-            {profile?.email}
+            {user.email}
           </div>
-          <div className="text-xs text-muted-foreground pt-2">
-            Coming soon: Edit profile, preferences, payment, etc.
+          <div>
+            <span className="font-semibold">Address: </span>
+            {profile?.address || "Not provided"}
+          </div>
+          <div>
+            <span className="font-semibold">Birthdate: </span>
+            {profile?.birthdate ? new Date(profile.birthdate).toLocaleDateString() : "Not provided"}
           </div>
         </div>
       </main>
