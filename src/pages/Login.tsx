@@ -1,28 +1,28 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
-  Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogIn, UserPlus } from "lucide-react";
+import { LogIn } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import SignupSteps from "@/components/SignupSteps";
 
 const Login = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [signupEmail, setSignupEmail] = useState("");
-  const [signupPassword, setSignupPassword] = useState("");
-  const [signupName, setSignupName] = useState("");
-  const [signupAddress, setSignupAddress] = useState("");
-  const [signupBirthdate, setSignupBirthdate] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -42,30 +42,48 @@ const Login = () => {
     });
     setIsSubmitting(false);
     if (error) {
-      toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+      toast({
+        title: "Login Failed",
+        description: error.message,
+        variant: "destructive",
+      });
     } else {
       toast({ title: "Logged In", description: "Welcome back!" });
       navigate("/trips");
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignup = async ({
+    email,
+    password,
+    address,
+    birthdate,
+  }: {
+    email: string;
+    password: string;
+    address: string;
+    birthdate: string;
+  }) => {
     setIsSubmitting(true);
     const { error } = await supabase.auth.signUp({
-      email: signupEmail,
-      password: signupPassword,
-      options: { 
-        data: { name: signupName, address: signupAddress, birthdate: signupBirthdate }
+      email,
+      password,
+      options: {
+        data: { address, birthdate },
       },
     });
     setIsSubmitting(false);
     if (error) {
-      toast({ title: "Signup Failed", description: error.message, variant: "destructive" });
+      toast({
+        title: "Signup Failed",
+        description: error.message,
+        variant: "destructive",
+      });
     } else {
       toast({
         title: "Check your inbox",
-        description: "A confirmation link was sent to your email. Verify to start using Sojourn.",
+        description:
+          "A confirmation link was sent to your email. Verify to start using Sojourn.",
       });
     }
   };
@@ -91,7 +109,6 @@ const Login = () => {
                 </CardHeader>
                 <form onSubmit={handleLogin}>
                   <CardContent className="space-y-4">
-
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
                       <Input
@@ -105,9 +122,7 @@ const Login = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="password">Password</Label>
-                      </div>
+                      <Label htmlFor="password">Password</Label>
                       <Input
                         id="password"
                         type="password"
@@ -119,7 +134,11 @@ const Login = () => {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={isSubmitting}
+                    >
                       <LogIn size={16} className="mr-2" /> Login
                     </Button>
                   </CardFooter>
@@ -135,73 +154,9 @@ const Login = () => {
                     Sign up to save your itineraries and preferences
                   </CardDescription>
                 </CardHeader>
-                <form onSubmit={handleSignup}>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input
-                        id="name"
-                        placeholder="John Doe"
-                        value={signupName}
-                        onChange={(e) => setSignupName(e.target.value)}
-                        required
-                        autoCapitalize="on"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="address">Address</Label>
-                      <Textarea
-                        id="address"
-                        placeholder="123 Main St, City, State ZIP"
-                        value={signupAddress}
-                        onChange={(e) => setSignupAddress(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="birthdate">Birthdate</Label>
-                      <Input
-                        id="birthdate"
-                        type="date"
-                        value={signupBirthdate}
-                        onChange={(e) => setSignupBirthdate(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="your@email.com"
-                        value={signupEmail}
-                        onChange={(e) => setSignupEmail(e.target.value)}
-                        required
-                        autoComplete="username"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        value={signupPassword}
-                        onChange={(e) => setSignupPassword(e.target.value)}
-                        required
-                        minLength={8}
-                        autoComplete="new-password"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Password must be at least 8 characters long
-                      </p>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button type="submit" className="w-full" disabled={isSubmitting}>
-                      <UserPlus size={16} className="mr-2" /> Create Account
-                    </Button>
-                  </CardFooter>
-                </form>
+                <CardContent>
+                  <SignupSteps onSubmit={handleSignup} isSubmitting={isSubmitting} />
+                </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
