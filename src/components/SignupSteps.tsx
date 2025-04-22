@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserPlus } from "lucide-react";
+import { UserPlus, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SignupStepsProps {
@@ -80,8 +80,12 @@ const SignupSteps = ({ onSubmit, isSubmitting }: SignupStepsProps) => {
               Password must be at least 8 characters long
             </p>
           </div>
-          <Button type="submit" className="w-full">
-            Next
+          <Button 
+            type="submit" 
+            className="w-full flex items-center justify-center"
+            disabled={!formData.email || !formData.password}
+          >
+            Next <ChevronRight size={16} className="ml-2" />
           </Button>
         </form>
 
@@ -119,7 +123,11 @@ const SignupSteps = ({ onSubmit, isSubmitting }: SignupStepsProps) => {
             >
               Back
             </Button>
-            <Button type="submit" className="flex-1" disabled={isSubmitting}>
+            <Button 
+              type="submit" 
+              className="flex-1 flex items-center justify-center"
+              disabled={isSubmitting}
+            >
               <UserPlus size={16} className="mr-2" /> Create Account
             </Button>
           </div>
