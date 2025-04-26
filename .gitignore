@@ -7,7 +7,27 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+# Node
+node_modules/
+
+# Python
+venv/
+.env
+.env.*
+*.env
+*.env.*
+
+# Databases and data
+*.sqlite
+*.db
+*.csv
+
+# Misc
+replace.txt
+
+# Build
+/dist/
+/build/
 dist
 dist-ssr
 *.local
